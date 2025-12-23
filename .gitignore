@@ -48,3 +48,11 @@ Thumbs.db
 *.mov
 *.wmv
 
+
+.data/output_logs.jsonl
+
+.data/output_metrics.jsonl
+
+.data/output_traces.jsonl
+
+.data/storage/receiver_filelog_

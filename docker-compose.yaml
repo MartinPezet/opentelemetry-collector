@@ -2,6 +2,8 @@ services:
   otel-collector:
     image: otel/opentelemetry-collector-contrib
     user: "0"
+    ports:
+      - "4318:4318"
     volumes:
     - ./config.yaml:/etc/otelcol-contrib/config.yaml
     - ./.data:/etc/otelcol-contrib/.data

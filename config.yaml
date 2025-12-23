@@ -4,17 +4,40 @@ receivers:
       - /var/lib/docker/containers/*/*.log
     start_at: end
     storage: file_storage
+  otlp:
+    protocols:
+      http:
+        endpoint: "0.0.0.0:4318"
+        cors:
+          max_age: 7200
+processors:
+  batch: {}
 extensions:
   file_storage:
     directory: /etc/otelcol-contrib/.data/storage
     create_directory: true
 exporters:
-  file:
-    path: /etc/otelcol-contrib/.data/output_logs
+  file/logs_out:
+    path: /etc/otelcol-contrib/.data/output_logs.jsonl
+    format: json
+  file/traces_out:
+    path: /etc/otelcol-contrib/.data/output_traces.jsonl
+    format: json
+  file/metrics_out:
+    path: /etc/otelcol-contrib/.data/output_metrics.jsonl
+    format: json
 service:
   extensions: [file_storage]
   pipelines:
     logs:
-      receivers: [filelog]
-      processors: []
-      exporters: [file]
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [file/logs_out]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [file/traces_out]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [file/metrics_out]
